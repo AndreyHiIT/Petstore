@@ -1,0 +1,585 @@
+basePath: /
+definitions:
+  controller.DataUser:
+    properties:
+      email:
+        type: string
+      firstname:
+        type: string
+      id:
+        type: integer
+      lastname:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      username:
+        type: string
+      userstatus:
+        type: integer
+    type: object
+  controller.FindPetbyIDResponse:
+    properties:
+      result:
+        $ref: '#/definitions/models.Pet'
+      success:
+        type: boolean
+    type: object
+  controller.FindPetbyStatusResponse:
+    properties:
+      results:
+        items:
+          $ref: '#/definitions/models.Pet'
+        type: array
+      success:
+        type: boolean
+    type: object
+  controller.GetUserResponseSuccess:
+    properties:
+      datauser:
+        $ref: '#/definitions/controller.DataUser'
+      error_code:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  controller.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  controller.OrderDeleteByIDResponse:
+    properties:
+      success:
+        type: boolean
+    type: object
+  controller.OrderFindByIDResponse:
+    properties:
+      order:
+        $ref: '#/definitions/models.Order'
+      success:
+        type: boolean
+    type: object
+  controller.OrderResponseErr:
+    properties:
+      data:
+        $ref: '#/definitions/internal_modules_order_controller.Data'
+      errorCode:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  controller.PetAddResponse:
+    properties:
+      data:
+        $ref: '#/definitions/internal_modules_pet_controller.Data'
+      success:
+        type: boolean
+    type: object
+  controller.PetAddResponseErr:
+    properties:
+      data:
+        $ref: '#/definitions/internal_modules_pet_controller.Data'
+      errorCode:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  controller.RegisterRequest:
+    properties:
+      email:
+        type: string
+      firstname:
+        type: string
+      lastname:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  controller.SuccessCreateOrderResponse:
+    properties:
+      orderID:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  controller.SuccessRequest:
+    properties:
+      success:
+        type: boolean
+    type: object
+  controller.UserUpdateResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  internal_modules_order_controller.Data:
+    properties:
+      message:
+        type: string
+    type: object
+  internal_modules_pet_controller.Data:
+    properties:
+      message:
+        type: string
+    type: object
+  models.Category:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  models.Order:
+    properties:
+      complete:
+        type: boolean
+      id:
+        type: integer
+      petID:
+        type: integer
+      quantity:
+        type: integer
+      shipDate:
+        type: string
+      status:
+        type: string
+    type: object
+  models.Pet:
+    properties:
+      category:
+        $ref: '#/definitions/models.Category'
+      id:
+        type: integer
+      name:
+        type: string
+      photourls:
+        items:
+          type: string
+        type: array
+      status:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/models.Tag'
+        type: array
+    type: object
+  models.Tag:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  service.Category:
+    properties:
+      name:
+        type: string
+    type: object
+  service.PetAddRequest:
+    properties:
+      category:
+        $ref: '#/definitions/service.Category'
+      name:
+        type: string
+      photourls:
+        items:
+          type: string
+        type: array
+      status:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/service.Tag'
+        type: array
+    type: object
+  service.PetUpdateRequest:
+    properties:
+      category:
+        $ref: '#/definitions/service.Category'
+      id:
+        type: integer
+      name:
+        type: string
+      photourls:
+        items:
+          type: string
+        type: array
+      status:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/service.Tag'
+        type: array
+    type: object
+  service.RequestCreateOrder:
+    properties:
+      complete:
+        type: boolean
+      petid:
+        type: integer
+      quantity:
+        type: integer
+      shipdate:
+        type: string
+      status:
+        type: string
+    type: object
+  service.Tag:
+    properties:
+      name:
+        type: string
+    type: object
+  service.UpdateUserRequest:
+    properties:
+      firstname:
+        type: string
+      lastname:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Chtoto-gdeto
+  title: Pet-Store
+  version: "1.0"
+paths:
+  /pet:
+    post:
+      consumes:
+      - application/json
+      description: Add a new pet to the database with the provided details.
+      operationId: AddPet
+      parameters:
+      - description: Pet to add
+        in: body
+        name: pet
+        required: true
+        schema:
+          $ref: '#/definitions/service.PetAddRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added pet
+          schema:
+            $ref: '#/definitions/controller.PetAddResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Add a new Pet
+      tags:
+      - pet
+    put:
+      consumes:
+      - application/json
+      description: Update an existing pet's details in the database based on the provided
+        pet ID.
+      operationId: UpdatePet
+      parameters:
+      - description: Pet data to update
+        in: body
+        name: pet
+        required: true
+        schema:
+          $ref: '#/definitions/service.PetUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated pet
+          schema:
+            $ref: '#/definitions/controller.PetAddResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update an existing Pet
+      tags:
+      - pet
+  /pet/{petId}:
+    get:
+      description: Find a pet by its ID
+      operationId: FindPetbyID
+      parameters:
+      - description: Pet ID to find
+        in: path
+        name: petId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully found pet
+          schema:
+            $ref: '#/definitions/controller.FindPetbyIDResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Find Pet by ID
+      tags:
+      - pet
+    post:
+      consumes:
+      - multipart/form-data
+      description: Updates a pet in the store with form data
+      operationId: UpdatePet
+      parameters:
+      - description: Pet ID to update
+        in: path
+        name: petId
+        required: true
+        type: string
+      - description: Pet name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Pet status
+        in: formData
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated pet
+          schema:
+            $ref: '#/definitions/controller.SuccessRequest'
+        "400":
+          description: Error updating pet
+          schema:
+            $ref: '#/definitions/controller.PetAddResponseErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Pet
+      tags:
+      - pet
+  /pet/findByStatus:
+    get:
+      description: 'Find pets based on their status. The status parameter is required.
+        Available values: available, pending, sold.'
+      operationId: FindPetbyStatus
+      parameters:
+      - description: Pet status to find
+        enum:
+        - available
+        - pending
+        - sold
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully found pets
+          schema:
+            $ref: '#/definitions/controller.FindPetbyStatusResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Find Pets by Status
+      tags:
+      - pet
+  /store/order:
+    post:
+      consumes:
+      - application/json
+      description: create order
+      operationId: Create Order
+      parameters:
+      - description: Create order
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service.RequestCreateOrder'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/controller.SuccessCreateOrderResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/controller.OrderResponseErr'
+      summary: Create Order
+      tags:
+      - store
+  /store/order/{orderId}:
+    delete:
+      consumes:
+      - application/json
+      description: delete order by ID
+      operationId: Delete Order
+      parameters:
+      - description: ID of the order to delete
+        in: path
+        name: orderId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Seccess
+          schema:
+            $ref: '#/definitions/controller.OrderDeleteByIDResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/controller.OrderResponseErr'
+      summary: Delete Order
+      tags:
+      - store
+    get:
+      consumes:
+      - application/json
+      description: find order by ID
+      operationId: Find Order
+      parameters:
+      - description: ID of the order to delete
+        in: path
+        name: orderId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved order
+          schema:
+            $ref: '#/definitions/controller.OrderFindByIDResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/controller.OrderResponseErr'
+      summary: Find Order
+      tags:
+      - store
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: create account
+      operationId: create-account
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controller.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+      summary: CreateUser
+      tags:
+      - user
+  /user/{username}:
+    get:
+      consumes:
+      - application/json
+      description: Fetches a user by their username.
+      operationId: GetUser
+      parameters:
+      - description: Username of the user
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved user
+          schema:
+            $ref: '#/definitions/controller.GetUserResponseSuccess'
+      summary: Get a user by username
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Updates the information of an existing user identified by username.
+      operationId: UpdateUser
+      parameters:
+      - description: Username of the user to update
+        in: path
+        name: username
+        required: true
+        type: string
+      - description: User data to update
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/service.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated user data
+          schema:
+            $ref: '#/definitions/controller.UserUpdateResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update user information
+      tags:
+      - user
+  /user/login:
+    get:
+      consumes:
+      - application/json
+      description: login
+      operationId: login
+      parameters:
+      - description: credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controller.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: token
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - user
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
